@@ -140,18 +140,28 @@ public class TeddyPupsServer {
                     }
                 }
 
-                // 2. Normal static files
+                // 2. Normal static files and subpages
                 if (string.IsNullOrEmpty(pathOnly) || pathOnly.Equals("index.html", StringComparison.OrdinalIgnoreCase)) {
                     pathOnly = "index.html";
                 }
 
                 string filePath = Path.Combine(_rootDir, pathOnly.Replace('/', '\\'));
 
-                // SPA Fallback for routes like /puppies, /faq, etc.
+                // If path doesn't exist directly, check for .html extension or subfolder index.html
                 if (!File.Exists(filePath)) {
                     string ext = Path.GetExtension(pathOnly);
                     if (string.IsNullOrEmpty(ext)) {
-                        filePath = Path.Combine(_rootDir, "index.html");
+                        string withHtml = filePath + ".html";
+                        if (File.Exists(withHtml)) {
+                            filePath = withHtml;
+                        } else {
+                            string indexInDir = Path.Combine(filePath, "index.html");
+                            if (File.Exists(indexInDir)) {
+                                filePath = indexInDir;
+                            } else {
+                                filePath = Path.Combine(_rootDir, "index.html");
+                            }
+                        }
                     }
                 }
 
