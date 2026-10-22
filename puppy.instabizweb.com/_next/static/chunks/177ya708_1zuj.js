@@ -2478,56 +2478,7 @@ Read more: https://nextjs.org/docs/messages/next-image-unconfigured-localpattern
                     e.push(a.pathname + a.search + a.hash), i(d, 6e3);
                   },
                   y = (a) => {
-                    if (
-                      a.defaultPrevented ||
-                      0 !== a.button ||
-                      a.metaKey ||
-                      a.ctrlKey ||
-                      a.shiftKey ||
-                      a.altKey
-                    )
-                      return;
-                    let n = a.target?.closest?.("a[href]");
-                    if (
-                      !n ||
-                      (n.target && "_self" !== n.target) ||
-                      n.hasAttribute("download") ||
-                      void 0 !== n.dataset.noCurtain
-                    )
-                      return;
-                    let d = new URL(n.href, location.href);
-                    if (
-                      !(
-                        d.origin !== location.origin ||
-                        /^\/(admin|api|media|_next)(\/|$)/.test(d.pathname)
-                      ) &&
-                      (d.pathname !== location.pathname ||
-                        (!d.hash && d.search === location.search)) &&
-                      !(0, c.F)()
-                    ) {
-                      var u;
-                      let n;
-                      a.preventDefault(),
-                        a.stopPropagation(),
-                        (g.current = 0 === a.detail),
-                        e.prefetch(d.pathname + d.search),
-                        dispatchEvent(new Event("tp:navigate")),
-                        (u = d.href),
-                        (n = t.dataset.state),
-                        ((o.current = u), "covered" === n || "snap" === n)
-                          ? f(u)
-                          : "covering" === n ||
-                            ((s(), "intro" === n && 1080 > h())
-                              ? (r("covered"),
-                                (l.current = performance.now()),
-                                f(u))
-                              : (r("covering"),
-                                i(() => {
-                                  r("covered"),
-                                    (l.current = performance.now()),
-                                    o.current && f(o.current);
-                                }, 300)));
-                    }
+                    return;
                   },
                   x = () => {
                     (0, c.F)() ||
@@ -2540,7 +2491,16 @@ Read more: https://nextjs.org/docs/messages/next-image-unconfigured-localpattern
                   b = (e) => {
                     e.persisted && (s(), r("idle"));
                   };
-                if ("intro" === t.dataset.state) {
+                let v = !1;
+                try {
+                  v = !!sessionStorage.getItem("tp_visited");
+                } catch (err) {}
+                if (v) {
+                  r("idle"), dispatchEvent(new Event("tp:arrived"));
+                } else if ("intro" === t.dataset.state) {
+                  try {
+                    sessionStorage.setItem("tp_visited", "1");
+                  } catch (err) {}
                   let e = h();
                   i(
                     () => dispatchEvent(new Event("tp:arrived")),
