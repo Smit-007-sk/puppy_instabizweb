@@ -46,6 +46,11 @@
                       children:
                         "Something on our side did not load. Give it a moment and try again.",
                     }),
+                    (0, t.jsx)("pre", {
+                      id: "error-debug",
+                      style: { color: "#b91c1c", fontSize: "13px", whiteSpace: "pre-wrap", background: "#fef2f2", padding: "12px", borderRadius: "8px", margin: "12px 0", border: "1px solid #fecaca" },
+                      children: (e ? (e.message || String(e)) + "\n" + (e.stack || "") : "No error details"),
+                    }),
                     (0, t.jsxs)("div", {
                       className: "mt-8 flex flex-wrap gap-3",
                       children: [

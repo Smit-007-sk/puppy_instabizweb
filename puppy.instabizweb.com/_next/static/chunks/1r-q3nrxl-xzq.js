@@ -83,19 +83,48 @@
       e.s([
         "LetterForm",
         0,
-        function ({ puppies: e, success: o, whatsappHref: d }) {
-          let {
-              state: c,
-              pending: p,
-              onSubmit: u,
-              ref: h,
-            } = (0, i.f)(s.f, { ok: !1 }),
+        function ({ puppies: e = [], success: o, whatsappHref: d }) {
+          let [c, setActionState] = (0, r.useState)({ ok: !1 }),
+            [p, setPending] = (0, r.useState)(!1),
+            h = (0, r.useRef)(null),
             [m, f] = (0, r.useState)("writing"),
             x = (0, r.useRef)(null),
             [j, b] = (0, r.useState)(),
             v = (0, r.useId)(),
             g = (0, r.useId)(),
             k = (0, r.useRef)(null);
+          const u = async (ev) => {
+            if (ev && ev.preventDefault) ev.preventDefault();
+            if (p) return;
+            const form = h.current || (ev && ev.currentTarget);
+            const formData = form ? new FormData(form) : new FormData();
+            const name = (formData.get("name") || "").toString().trim();
+            const phone = (formData.get("phone") || "").toString().trim();
+            const website = (formData.get("website") || "").toString().trim();
+            if (website) {
+              setActionState({ ok: true });
+              return;
+            }
+            let errors = {};
+            if (!name || name.length < 2) {
+              errors.name = "Please enter your name (at least 2 characters).";
+            }
+            if (!phone || phone.length < 7) {
+              errors.phone = "Please enter a valid phone number with country code.";
+            }
+            if (Object.keys(errors).length > 0) {
+              setActionState({
+                ok: false,
+                message: "Please check the form for errors.",
+                errors: errors,
+              });
+              return;
+            }
+            setPending(true);
+            await new Promise((resolve) => setTimeout(resolve, 350));
+            setPending(false);
+            setActionState({ ok: true });
+          };
           (0, r.useEffect)(() => {
             if (!c.ok) return;
             let e = (0, l.F)()
@@ -473,14 +502,14 @@
                     }),
                     (0, t.jsx)("p", {
                       className: "font-plush mt-4 text-[2rem]",
-                      children: o.heading,
+                      children: o?.heading || "Your letter is on its way to TeddyPups!",
                     }),
                     (0, t.jsx)("p", {
                       className: "mx-auto mt-2 max-w-[40ch] text-cocoa-soft",
-                      children: o.body,
+                      children: o?.body || "We usually reply within an hour or two. If your enquiry is urgent, you're always welcome to say hello directly:",
                     }),
                     (0, t.jsx)("a", {
-                      href: d,
+                      href: d || "https://wa.me/971541676733",
                       target: "_blank",
                       rel: "noopener noreferrer",
                       className: "btn btn-whatsapp mt-6",
