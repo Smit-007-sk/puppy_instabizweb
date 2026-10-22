@@ -506,7 +506,7 @@
                     }),
                     (0, t.jsx)("p", {
                       className: "mx-auto mt-2 max-w-[40ch] text-cocoa-soft",
-                      children: o?.body || "We usually reply within an hour or two. If your enquiry is urgent, you're always welcome to say hello directly:",
+                      children: (o?.body ? o.body.replace(/\u00e2\u20ac\u201d|\u00e2\u20ac[^\s]*|\u00e2[^\s]*/g, "—") : "Thank you — our team will get back to you promptly. For the quickest reply, message us on WhatsApp."),
                     }),
                     (0, t.jsx)("a", {
                       href: d || "https://wa.me/971541676733",
