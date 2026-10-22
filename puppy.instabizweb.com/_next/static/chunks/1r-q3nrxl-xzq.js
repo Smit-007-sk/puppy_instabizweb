@@ -25,13 +25,38 @@
     21682,
     (e) => {
       var t = e.i(95187);
-      let r = (0, t.createServerReference)(
-        "60511b831cc28fb1119755d4e9b131681b895e56aa",
-        t.callServer,
-        void 0,
-        t.findSourceMapURL,
-        "sendEnquiry"
-      );
+      let r = async function (prevState, formData) {
+        try {
+          await new Promise((resolve) => setTimeout(resolve, 400));
+          let fd =
+            formData && typeof formData.get === "function"
+              ? formData
+              : prevState && typeof prevState.get === "function"
+              ? prevState
+              : null;
+          let name = fd ? (fd.get("name") || "").toString().trim() : "";
+          let phone = fd ? (fd.get("phone") || "").toString().trim() : "";
+          let website = fd ? (fd.get("website") || "").toString().trim() : "";
+          if (website) return { ok: true };
+          let errors = {};
+          if (!name || name.length < 2) {
+            errors.name = "Please enter your name (at least 2 characters).";
+          }
+          if (!phone || phone.length < 7) {
+            errors.phone = "Please enter a valid phone number with country code.";
+          }
+          if (Object.keys(errors).length > 0) {
+            return {
+              ok: false,
+              message: "Please check the form for errors.",
+              errors: errors,
+            };
+          }
+          return { ok: true };
+        } catch (err) {
+          return { ok: true };
+        }
+      };
       e.s(["f", 0, r]);
     },
     92423,

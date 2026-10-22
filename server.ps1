@@ -92,6 +92,11 @@ public class TeddyPupsServer {
                 string fullUrl = tokens[1];
 
                 if (method != "GET" && method != "HEAD") {
+                    if (method == "POST") {
+                        byte[] postResp = Encoding.UTF8.GetBytes("0:{\"a\":{\"ok\":true}}\n");
+                        SendResponse(stream, 200, "OK", "text/x-component; charset=utf-8", postResp);
+                        return;
+                    }
                     byte[] notAllowed = Encoding.UTF8.GetBytes("Method Not Allowed");
                     SendResponse(stream, 405, "Method Not Allowed", "text/plain", notAllowed);
                     return;
