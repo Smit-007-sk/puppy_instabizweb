@@ -20,7 +20,6 @@ using System.Collections.Generic;
 public class TeddyPupsServer {
     private readonly string _rootDir;
     private readonly int _port;
-    private readonly List<string> _fallbackImages;
     private readonly Dictionary<string, string> _mimeTypes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) {
         { ".html", "text/html; charset=utf-8" },
         { ".htm", "text/html; charset=utf-8" },
@@ -44,14 +43,6 @@ public class TeddyPupsServer {
     public TeddyPupsServer(string rootDir, int port) {
         _rootDir = Path.GetFullPath(rootDir);
         _port = port;
-
-        _fallbackImages = new List<string>();
-        string nextDir = Path.Combine(_rootDir, "_next");
-        if (Directory.Exists(nextDir)) {
-            foreach (var file in Directory.GetFiles(nextDir, "image*")) {
-                _fallbackImages.Add(file);
-            }
-        }
     }
 
     public void Start() {
@@ -122,6 +113,8 @@ public class TeddyPupsServer {
                     string targetImgUrl = GetQueryParam(queryString, "url");
                     if (!string.IsNullOrEmpty(targetImgUrl)) {
                         targetImgUrl = WebUtility.UrlDecode(targetImgUrl);
+                        int qPos = targetImgUrl.IndexOf('?');
+                        if (qPos >= 0) targetImgUrl = targetImgUrl.Substring(0, qPos);
                         string localPath = Path.Combine(_rootDir, targetImgUrl.TrimStart('/', '\\').Replace('/', '\\'));
 
                         if (File.Exists(localPath)) {
@@ -129,15 +122,14 @@ public class TeddyPupsServer {
                             return;
                         }
 
-                        if (_fallbackImages.Count > 0) {
-                            int hash = Math.Abs(targetImgUrl.GetHashCode()) % _fallbackImages.Count;
-                            string fallbackPath = _fallbackImages[hash];
-                            if (File.Exists(fallbackPath)) {
-                                ServeFile(stream, fallbackPath);
-                                return;
-                            }
+                        if (File.Exists(localPath + ".jpg")) {
+                            ServeFile(stream, localPath + ".jpg");
+                            return;
                         }
                     }
+                    byte[] notFoundBytes = Encoding.UTF8.GetBytes("404 Image Not Found");
+                    SendResponse(stream, 404, "Not Found", "text/plain", notFoundBytes);
+                    return;
                 }
 
                 // 2. Normal static files and subpages
@@ -202,7 +194,10 @@ public class TeddyPupsServer {
                          "Content-Type: " + mime + "\r\n" +
                          "Content-Length: " + body.Length + "\r\n" +
                          "Connection: close\r\n" +
-                         "Cache-Control: public, max-age=31536000\r\n" +
+                         "Cache-Control: no-cache, no-store, must-revalidate, max-age=0\r\n" +
+                         "Pragma: no-cache\r\n" +
+                         "Expires: 0\r\n" +
+                         "Clear-Site-Data: \"cache\"\r\n" +
                          "Access-Control-Allow-Origin: *\r\n\r\n";
         byte[] headerBytes = Encoding.ASCII.GetBytes(headers);
         stream.Write(headerBytes, 0, headerBytes.Length);
@@ -220,9 +215,13 @@ public class TeddyPupsServer {
         if (string.IsNullOrEmpty(queryString)) return null;
         string[] pairs = queryString.Split('&');
         foreach (var pair in pairs) {
-            string[] kv = pair.Split('=');
-            if (kv.Length >= 2 && kv[0].Equals(paramName, StringComparison.OrdinalIgnoreCase)) {
-                return kv[1];
+            int eq = pair.IndexOf('=');
+            if (eq > 0) {
+                string k = pair.Substring(0, eq);
+                string v = pair.Substring(eq + 1);
+                if (k.Equals(paramName, StringComparison.OrdinalIgnoreCase)) {
+                    return v;
+                }
             }
         }
         return null;
