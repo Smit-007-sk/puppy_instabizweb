@@ -2,10 +2,9 @@ param(
     [int]$Port = 3000
 )
 
-$baseDir = Join-Path $PSScriptRoot "puppy.instabizweb.com"
-if (-not (Test-Path $baseDir)) {
-    Write-Error "Target website directory not found: $baseDir"
-    exit 1
+$baseDir = $PSScriptRoot
+if (Test-Path (Join-Path $PSScriptRoot "puppy.instabizweb.com\index.html")) {
+    $baseDir = Join-Path $PSScriptRoot "puppy.instabizweb.com"
 }
 
 $csharpCode = @"

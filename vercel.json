@@ -2,11 +2,6 @@
   "version": 2,
   "cleanUrls": true,
   "trailingSlash": false,
-  "functions": {
-    "api/image.js": {
-      "includeFiles": "puppy.instabizweb.com/**"
-    }
-  },
   "rewrites": [
     {
       "source": "/_next/image",
@@ -14,39 +9,7 @@
     },
     {
       "source": "/puppies/:slug",
-      "destination": "/puppy.instabizweb.com/puppies/:slug.html"
-    },
-    {
-      "source": "/puppies",
-      "destination": "/puppy.instabizweb.com/puppies.html"
-    },
-    {
-      "source": "/contact",
-      "destination": "/puppy.instabizweb.com/contact.html"
-    },
-    {
-      "source": "/faq",
-      "destination": "/puppy.instabizweb.com/faq.html"
-    },
-    {
-      "source": "/gone-home",
-      "destination": "/puppy.instabizweb.com/gone-home.html"
-    },
-    {
-      "source": "/happy-families",
-      "destination": "/puppy.instabizweb.com/happy-families.html"
-    },
-    {
-      "source": "/how-it-works",
-      "destination": "/puppy.instabizweb.com/how-it-works.html"
-    },
-    {
-      "source": "/",
-      "destination": "/puppy.instabizweb.com/index.html"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/puppy.instabizweb.com/$1"
+      "destination": "/puppies/:slug.html"
     }
   ]
 }

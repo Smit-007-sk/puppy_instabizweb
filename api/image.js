@@ -12,10 +12,10 @@ module.exports = (req, res) => {
     const cleanRel = targetUrl.replace(/^\/+/, '').replace(/\//g, path.sep);
 
     const candidates = [
-      path.join(process.cwd(), 'puppy.instabizweb.com', cleanRel),
       path.join(process.cwd(), cleanRel),
-      path.join(__dirname, '..', 'puppy.instabizweb.com', cleanRel),
-      path.join(__dirname, '..', cleanRel)
+      path.join(process.cwd(), 'puppy.instabizweb.com', cleanRel),
+      path.join(__dirname, '..', cleanRel),
+      path.join(__dirname, '..', '..', 'puppy.instabizweb.com', cleanRel)
     ];
 
     let foundPath = candidates.find(p => {
