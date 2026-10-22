@@ -33,6 +33,7 @@
         "NoticeBoard",
         0,
         function ({ faqs: e, askHref: o }) {
+          e = Array.isArray(e) ? e : [];
           let [d, c] = (0, a.useState)(null),
             [u, p] = (0, a.useState)(""),
             h = (0, a.useId)(),
