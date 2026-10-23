@@ -2,6 +2,11 @@
   "version": 2,
   "cleanUrls": true,
   "trailingSlash": false,
+  "functions": {
+    "api/image.js": {
+      "includeFiles": "{brand,media,puppies}/**"
+    }
+  },
   "rewrites": [
     {
       "source": "/_next/image",

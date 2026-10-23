@@ -3,9 +3,6 @@ param(
 )
 
 $baseDir = $PSScriptRoot
-if (Test-Path (Join-Path $PSScriptRoot "puppy.instabizweb.com\index.html")) {
-    $baseDir = Join-Path $PSScriptRoot "puppy.instabizweb.com"
-}
 
 $csharpCode = @"
 using System;

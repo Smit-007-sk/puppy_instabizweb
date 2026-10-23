@@ -13,9 +13,7 @@ module.exports = (req, res) => {
 
     const candidates = [
       path.join(process.cwd(), cleanRel),
-      path.join(process.cwd(), 'puppy.instabizweb.com', cleanRel),
-      path.join(__dirname, '..', cleanRel),
-      path.join(__dirname, '..', '..', 'puppy.instabizweb.com', cleanRel)
+      path.join(__dirname, '..', cleanRel)
     ];
 
     let foundPath = candidates.find(p => {
